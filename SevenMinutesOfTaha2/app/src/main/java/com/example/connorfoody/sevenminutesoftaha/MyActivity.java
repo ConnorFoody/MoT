@@ -4,28 +4,47 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.TextView;
 
 
+
 public class MyActivity extends Activity {
+    SoundReader reader = null;
+    public Handler mhandle = new Handler(){
+        @Override
+        public void handleMessage(Message msg){
+            if(msg.what == 1) {
+                TextView text = (TextView) findViewById(R.id.output);
+                text.setText("GOOD: " + msg.obj);
+            }
+            else if(msg.what == -1){
+                TextView text = (TextView) findViewById(R.id.output);
+                text.setText("ERROR: " + msg.obj);
+
+
+            }
+            else{
+                super.handleMessage(msg);
+
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
-        TextView text = (TextView) findViewById(R.id.output);
-        MyThreadRunner runner = new MyThreadRunner(text);
-        runner.start();
-        /*text.setText("change");
-        try {
-            Thread.sleep(3000);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-        text.setText("two");
-        SoundReader reader = new SoundReader();
-        */
+        //TextView text = (TextView) findViewById(R.id.output);
+
+
+        reader = new SoundReader(mhandle);
+        //mhandle.postDelayed(reader, 3000);
+        //mhandle.post(reader);
+        reader.start();
+        //Thread th = new Thread(reader);
+        //th.start();
     }
 
 
